@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Food Identifier</title>
+</head>
+<body>
+  <h1>Upload a Food Photo</h1>
+  <input type="file" id="imageInput" accept="image/*" />
+  <button onclick="uploadImage()">Identify Food</button>
+  <div id="result"></div>
+
+  <script>
+    async function uploadImage() {
+      const fileInput = document.getElementById('imageInput');
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Please upload an image.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await fetch("/api/identify", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        document.getElementById("result").innerHTML = `<p>Identified Food: ${data.food}</p><img src="${data.image}" alt="Uploaded Food" />`;
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to identify food.");
+      }
+    }
+  </script>
+</body>
+</html>
